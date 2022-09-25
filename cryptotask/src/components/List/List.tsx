@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import btc from '../../assets/img/btc@2x.png';
+import { useGetCryptosQuery } from "../../store/actions/getCrypto";
 
 export function List(){
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +29,7 @@ export function List(){
             vwap24Hr: "100000",
         },
         {
-            id: "bitcasdoin",
+            id: "bitcasdo",
             rank: "1",
             symbol: "BTC",
             name: "Bitcoin",
@@ -41,7 +42,7 @@ export function List(){
             vwap24Hr: "100000",
         },
         {
-            id: "bitcasdoin",
+            id: "bitcasdoina",
             rank: "1",
             symbol: "BTC",
             name: "Bitcoin",
@@ -171,24 +172,28 @@ export function List(){
     margin: 0 auto;
     display: block;
     `
+    const StyledTrTop = styled.tr`
+    `
     return(
         <StyledDiv>
             <StyledTable>
                 <StyledThead>
-                    <StyledTh>Rank</StyledTh>
-                    <BigTh>Name</BigTh>    
-                    <StyledTh>Price</StyledTh>
-                    <StyledTh>Market Cap</StyledTh>    
-                    <StyledTh>VWAP(24h)</StyledTh>    
-                    <StyledTh>Supply</StyledTh>    
-                    <StyledTh>Volume(24h)</StyledTh>    
-                    <StyledTh>Change(24h)</StyledTh>  
-                    <SmallTh></SmallTh>  
+                    <StyledTrTop>
+                        <StyledTh>Rank</StyledTh>
+                        <BigTh>Name</BigTh>    
+                        <StyledTh>Price</StyledTh>
+                        <StyledTh>Market Cap</StyledTh>    
+                        <StyledTh>VWAP(24h)</StyledTh>    
+                        <StyledTh>Supply</StyledTh>    
+                        <StyledTh>Volume(24h)</StyledTh>    
+                        <StyledTh>Change(24h)</StyledTh>  
+                        <SmallTh></SmallTh>  
+                    </StyledTrTop>
                 </StyledThead>
                 <StyledTbody>
-                    {data.map((item) => {
+                    {data.map((item: any) => {
                         return(
-                                <StyledTr onClick={(e) => handleClick(item.id, e)}>
+                                <StyledTr key={item.id} onClick={(e) => handleClick(item.id, e)}>
                                     <StyledTd>{item.rank}</StyledTd>
                                     <StyledTd>
                                         <StyledP>{item.name}</StyledP>

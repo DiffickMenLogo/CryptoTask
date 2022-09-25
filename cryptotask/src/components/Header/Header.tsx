@@ -1,10 +1,14 @@
 import btc from '../../assets/img/btc@2x.png';
 import styled from "styled-components";
 import { Modal } from '../Modal/Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import portfolio from '../../assets/svg/briefcase-fill.svg';
+import { useGetCryptosByIdQuery, useGetCryptosQuery } from '../../store/actions/getCrypto';
 export function Header(){
+    // const { isLoading, isError, data } = useGetCryptosQuery(10);
+    const { data } = useGetCryptosByIdQuery('bitcoin');
+    console.log(data);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const StyledHeader = styled.div`
     display: flex;

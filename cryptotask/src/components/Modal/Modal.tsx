@@ -80,10 +80,12 @@ export function Modal(props: any){
                 <ModalBody>
                     <StyledTable>
                         <StyledThead>
-                            <StyledTh>Name</StyledTh>
-                            <StyledTh>Value</StyledTh>
-                            <StyledTh>Price</StyledTh>
-                            <ExitTh></ExitTh>
+                            <StyledTr>
+                                <StyledTh>Name</StyledTh>
+                                <StyledTh>Value</StyledTh>
+                                <StyledTh>Price</StyledTh>
+                                <ExitTh></ExitTh>
+                            </StyledTr>
                         </StyledThead>
                         <StyledTbody>
                             <StyledTr>
