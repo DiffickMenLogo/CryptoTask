@@ -1,66 +1,27 @@
-import styled from 'styled-components'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useGetCryptoHistoryQuery, useGetCryptosByIdQuery } from '../../store/actions/getCrypto'
 import { CryptoDate } from '../../models/assets'
+import {
+  CryptoImage,
+  CryptoName,
+  CurrentDate,
+  HeaderBox,
+  HeaderLeftBox,
+  HeaderP,
+  StyledBack,
+  StyledDivTwo,
+  StyledGraph,
+  StyledInfo,
+  StyledInfoHeader,
+  StyledInfoHeaderLeft,
+  StyledInfoHeaderRight,
+} from '../../styledComponents/infoComponents'
 
 export function Info() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { isLoading, data } = useGetCryptosByIdQuery(searchParams.get('id')?.toString() as string)
   const graph = useGetCryptoHistoryQuery({ coinId: searchParams.get('id')?.toString() as string, timeperiod: 'h1' })
-  const StyledDivTwo = styled.div``
-  const StyledInfo = styled.div`
-    width: 80%;
-    margin: 0 auto;
-  `
-  const StyledInfoHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  `
-  const HeaderLeftBox = styled.div`
-    display: flex;
-  `
-  const StyledInfoHeaderLeft = styled.div``
-  const CryptoImage = styled.img`
-    width: 50px;
-    height: 50px;
-    align-self: center;
-  `
-  const CurrentDate = styled.p``
-  const CryptoName = styled.h1``
-  const StyledInfoHeaderRight = styled.div`
-    display: flex;
-  `
-  const HeaderBox = styled.div`
-    margin: 0 10px;
-  `
-  const HeaderP = styled.p`
-    font-size: 25px;
-    font-weight: 700;
-    color: #666666;
-  `
-  const StyledGraph = styled.div`
-    width: 500px;
-    margin-top: 50px;
-  `
-  const StyledBack = styled.div`
-    width: 300px;
-    height: 50px;
-    margin: 15px;
-    background-color: #fff;
-    font-size: 25px;
-    font-weight: 700;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    letter-spacing: 0.1em;
-    border-radius: 10px;
-    cursor: pointer;
-    :hover {
-      background-color: #f2f2f2;
-    }
-  `
 
   return (
     <StyledInfo>

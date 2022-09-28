@@ -1,118 +1,46 @@
-import React, { useCallback } from 'react'
-import styled from 'styled-components'
+import React, { useCallback, useState } from 'react'
+import {
+  DeleteTd,
+  ExitTh,
+  ModalBody,
+  ModalContainer,
+  ModalExit,
+  ModalFooter,
+  ModalHeader,
+  StyledH1,
+  StyledModal,
+  StyledTable,
+  StyledTbody,
+  StyledTd,
+  StyledTh,
+  StyledThead,
+  StyledTr,
+} from '../../styledComponents/modalComponents'
 import { useActions } from '../../hooks/actions'
 import { useAppSelector } from '../../hooks/redux'
 import { PortfolioState } from '../../models/assets'
-import { portfolioSlice } from '../../store/reducers/portfolioSlice'
+import { useGetCryptoIdsQuery } from '../../store/actions/getCrypto'
 
 export function Modal({ setIsModalOpen }: { setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
   const closeModal = () => {
     setIsModalOpen(false)
   }
   const portfolioData = useAppSelector((state) => state.portfolio)
+  const [idQuery, setIdQuery] = useState(portfolioData.portfolio.map((item: PortfolioState) => item.id))
+  const { isLoading, data } = useGetCryptoIdsQuery(idQuery)
   const { removeCoin } = useActions()
+
   const deleteCrypto = useCallback((coin: PortfolioState) => {
-    console.log(coin)
     if (portfolioData.portfolio.length > 0) {
-      console.log('enter')
       removeCoin(coin)
-      localStorage.setItem('portfolio', JSON.stringify(portfolioData))
-      console.log(portfolioData, 'portfolioData')
+      if (portfolioData.portfolio.length === 1) {
+        localStorage.removeItem('portfolio')
+      } else {
+        localStorage.setItem('portfolio', JSON.stringify(portfolioData))
+      }
     }
   }, [])
-  console.log(portfolioData, 'portfolio')
-  const StyledModal = styled.div`
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    position: absolute;
-    z-index: 0;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    cursor: pointer;
-  `
-  const ModalContainer = styled.div`
-    background-color: #fff;
-    width: 70%;
-    height: 70%;
-    cursor: default;
-    z-index: 10;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  `
-  const ModalHeader = styled.div`
-    display: flex;
-    height: 10%;
-    width: 80%;
-    margin: 0 auto;
-    align-items: center;
-    justify-content: space-between;
-  `
-  const StyledH1 = styled.h1``
-  const ModalExit = styled.div`
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 1px solid #000;
-    border-radius: 50px;
-    :hover {
-      background-color: #8c8c8c;
-      border: 1px solid #000;
-      border-radius: 50%;
-    }
-  `
-  const ModalBody = styled.div`
-    width: 80%;
-    height: 80%;
-    margin: 0 auto;
-  `
-  const ModalFooter = styled.div`
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  `
-  const StyledTable = styled.table`
-    width: 100%;
-  `
-  const StyledThead = styled.thead``
-  const StyledTh = styled.th`
-    width: 30%;
-    text-align: center;
-    line-height: 70px;
-  `
-  const ExitTh = styled.th`
-    width: 10%;
-  `
-  const StyledTbody = styled.tbody``
-  const StyledTr = styled.tr``
-  const StyledTd = styled.td`
-    text-align: center;
-    line-height: 50px;
-  `
-  const DeleteTd = styled.td`
-    width: 15px;
-    height: 15px;
-    margin: 80% auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 1px solid #000;
-    border-radius: 50px;
-    :hover {
-      background-color: #8c8c8c;
-      border: 1px solid #000;
-      border-radius: 50%;
-    }
-  `
+
   return (
     <StyledModal>
       <ModalContainer>

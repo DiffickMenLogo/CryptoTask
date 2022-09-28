@@ -1,53 +1,54 @@
-import styled from 'styled-components'
 import { Modal } from '../Modal/Modal'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-// import portfolio from '../../assets/svg/briefcase-fill.svg'
-import { useGetCryptosQuery } from '../../store/actions/getCrypto'
+import { useGetCryptoIdsQuery, useGetCryptosQuery } from '../../store/actions/getCrypto'
 import { DataItem, PortfolioState } from '../../models/assets'
 import { useAppSelector } from '../../hooks/redux'
+import {
+  StyledH1,
+  StyledH3,
+  StyledHeader,
+  StyledPopular,
+  StyledPopularCoin,
+  StyledPopularCoinImg,
+  StyledPopularCoinText,
+  StyledPortfolio,
+} from '../../styledComponents/headerComponents'
 export function Header() {
   const portfolioData = useAppSelector((state) => state.portfolio)
-  const { isLoading, data } = useGetCryptosQuery(3)
-  console.log(data, 'data')
+  const [idQuery, setIdQuery] = useState(portfolioData.portfolio.map((item: PortfolioState) => item.id).join(','))
+  const idsApi = useGetCryptoIdsQuery(idQuery, {
+    skip: idQuery == '',
+  })
+  const [newPrice, setNewPrice] = useState(0)
+  const [newPercent, setNewPercent] = useState(0)
+  useEffect(() => {
+    setIdQuery(portfolioData.portfolio.map((item: PortfolioState) => item.id).join(','))
+    if (!idsApi.isLoading && idQuery !== '') {
+      console.log('new price')
+      setNewPrice(
+        idsApi.data.data
+          .reduce((acc: number, item: DataItem) => {
+            return acc + Number(item.priceUsd)
+          }, 1)
+          .toFixed(2) -
+          portfolioData.portfolio
+            .reduce((acc: number, item: PortfolioState) => {
+              return acc + Number(item.price)
+            }, 1)
+            .toFixed(2),
+      )
+      setNewPercent((newPrice / portfolioData.portfolio.reduce((acc: number, item: PortfolioState) => acc + Number(item.price), 1)) * 100)
+    } else {
+      setNewPrice(0)
+    }
+    console.log(newPrice)
+  }, [idsApi.isLoading, newPrice, idQuery])
+  const { isLoading, data } = useGetCryptosQuery(3, {
+    pollingInterval: 5000,
+  })
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const StyledHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    height: 60px;
 
-    background-color: #fff;
-    color: #03254c;
-  `
-  const StyledH1 = styled.h1`
-    font-size: 35px;
-    font-weight: 700;
-  `
-  const StyledPopular = styled.div`
-    display: flex;
-    align-items: center;
-  `
-  const StyledPopularCoin = styled.div`
-    display: flex;
-    align-items: center;
-  `
-  const StyledPopularCoinImg = styled.img`
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-  `
-  const StyledPopularCoinText = styled.p`
-    font-size: 15px;
-    margin: 0 15px;
-  `
-  const StyledH3 = styled.h3``
-  const StyledPortfolio = styled.div`
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  `
   return (
     <StyledHeader>
       <StyledH1>
@@ -86,7 +87,7 @@ export function Header() {
                 }, 0)
                 .toFixed(2)
             : 0}
-          $
+          ({newPrice.toFixed(2)}$) {newPercent.toFixed(2)}%
         </StyledPopularCoinText>
       </StyledPortfolio>
       {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}

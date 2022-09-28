@@ -41,7 +41,8 @@ export const portfolioSlice = createSlice({
         if (coin.name === action.payload.name) {
           return {
             ...coin,
-            value: action.payload.value,
+            price: action.payload.price,
+            change: action.payload.change,
           }
         }
         return coin

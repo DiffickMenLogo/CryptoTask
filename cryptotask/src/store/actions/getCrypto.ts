@@ -22,7 +22,13 @@ export const cryptoApi = createApi({
         method: 'GET',
       }),
     }),
+    getCryptoIds: builder.query({
+      query: (ids: string) => ({
+        url: `/assets?ids=${ids}`,
+        method: 'GET',
+      }),
+    }),
   }),
 })
 
-export const { useGetCryptosQuery, useGetCryptosByIdQuery, useGetCryptoHistoryQuery } = cryptoApi
+export const { useGetCryptosQuery, useGetCryptosByIdQuery, useGetCryptoHistoryQuery, useGetCryptoIdsQuery } = cryptoApi
