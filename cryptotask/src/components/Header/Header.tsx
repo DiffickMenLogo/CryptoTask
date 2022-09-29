@@ -19,13 +19,13 @@ export function Header() {
   const [idQuery, setIdQuery] = useState(portfolioData.portfolio.map((item: PortfolioState) => item.id).join(','))
   const idsApi = useGetCryptoIdsQuery(idQuery, {
     skip: idQuery == '',
+    pollingInterval: 5000,
   })
   const [newPrice, setNewPrice] = useState(0)
   const [newPercent, setNewPercent] = useState(0)
   useEffect(() => {
     setIdQuery(portfolioData.portfolio.map((item: PortfolioState) => item.id).join(','))
     if (!idsApi.isLoading && idQuery !== '') {
-      console.log('new price')
       setNewPrice(
         idsApi.data.data
           .reduce((acc: number, item: DataItem) => {
@@ -42,8 +42,7 @@ export function Header() {
     } else {
       setNewPrice(0)
     }
-    console.log(newPrice)
-  }, [idsApi.isLoading, newPrice, idQuery])
+  }, [idsApi.isLoading, newPrice, idQuery, idsApi.isFetching, portfolioData.portfolio])
   const { isLoading, data } = useGetCryptosQuery(3, {
     pollingInterval: 5000,
   })
@@ -87,7 +86,7 @@ export function Header() {
                 }, 0)
                 .toFixed(2)
             : 0}
-          ({newPrice.toFixed(2)}$) {newPercent.toFixed(2)}%
+          ({newPrice.toFixed(2)}$) {newPrice > 0 ? newPercent.toFixed(2) : 0}%
         </StyledPopularCoinText>
       </StyledPortfolio>
       {isModalOpen && <Modal setIsModalOpen={setIsModalOpen} />}

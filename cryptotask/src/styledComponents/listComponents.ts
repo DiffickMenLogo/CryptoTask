@@ -31,6 +31,12 @@ export const StyledTable = styled.table`
     border: 1px solid #fff;
     border-radius: 5px;
     border-collapse: collapse;
+    @media (max-width: 1024px) {
+      width: 90%;
+    }
+    @media (max-width: 768px) {
+      width: 100%;
+    }
     `
 export const StyledThead = styled.thead`
   line-height: 30px;
@@ -39,12 +45,22 @@ export const StyledThead = styled.thead`
 export const StyledTr = styled.tr`
   border-bottom: 1px solid #000;
   width: 100%;
+  :hover {
+    cursor: pointer;
+    background-color: #e0e0e0;
+  }
 `
 export const StyledTbody = styled.tbody``
 export const StyledTh = styled.th`
   text-align: center;
   font-weight: 300;
   color: #0e0e0e;
+  @media (max-width: 1024px) {
+    font-size: 90%;
+  }
+  @media (max-width: 768px) {
+    font-size: 80%;
+  }
 `
 export const BigTh = styled.th`
   width: 30%;
@@ -57,6 +73,12 @@ export const StyledTd = styled.td`
   font-size: 15px;
   border-collapse: separate;
   border-spacing: 10px;
+  @media (max-width: 1024px) {
+    font-size: 90%;
+  }
+  @media (max-width: 768px) {
+    font-size: 80%;
+  }
 `
 export const StyledP = styled.p``
 export const SmallTh = styled.th`
@@ -66,7 +88,7 @@ export const SmallTd = styled.td`
   width: 5%;
   text-align: center;
 `
-export const AddtoPort = styled.div`
+export const AddtoPort = styled.button`
   width: 30px;
   height: 30px;
   display: flex;
@@ -93,7 +115,7 @@ export const StyledModal = styled.div`
   transform: translate(-50%, -50%);
   cursor: pointer;
 `
-export const ModalContainer = styled.div`
+export const ModalContainer = styled.form`
   background-color: #fff;
   width: 50%;
   height: fit-content;
@@ -126,7 +148,7 @@ export const ModalImage = styled.img`
   width: 30px;
   height: 30px;
 `
-export const ModalButton = styled.button`
+export const ModalButton = styled.input`
   width: 100px;
   height: 30px;
   background-color: #000;
@@ -136,6 +158,12 @@ export const ModalButton = styled.button`
   margin: 0 auto;
   display: block;
   margin-bottom: 20px;
+  letter-spacing: 1px;
+  :hover {
+    cursor: pointer;
+    background-color: #0f0f0f;
+    color: #fefefe;
+  }
 `
 export const StyledTrTop = styled.tr``
 export const ModalExit = styled.div`

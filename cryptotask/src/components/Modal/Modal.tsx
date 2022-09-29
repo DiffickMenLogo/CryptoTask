@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   DeleteTd,
   ExitTh,
@@ -22,31 +22,36 @@ import { PortfolioState } from '../../models/assets'
 import { useGetCryptoIdsQuery } from '../../store/actions/getCrypto'
 
 export function Modal({ setIsModalOpen }: { setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const closeModal = () => {
-    setIsModalOpen(false)
+  const closeModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const el = e.target as HTMLElement
+    if (el.id === 'backgroundModal' || el.id === 'exit') {
+      setIsModalOpen(false)
+    }
   }
   const portfolioData = useAppSelector((state) => state.portfolio)
   const [idQuery, setIdQuery] = useState(portfolioData.portfolio.map((item: PortfolioState) => item.id))
   const { isLoading, data } = useGetCryptoIdsQuery(idQuery)
   const { removeCoin } = useActions()
 
+  useEffect(() => {
+    localStorage.setItem('portfolio', JSON.stringify(portfolioData))
+  }, [portfolioData])
+
   const deleteCrypto = useCallback((coin: PortfolioState) => {
     if (portfolioData.portfolio.length > 0) {
       removeCoin(coin)
       if (portfolioData.portfolio.length === 1) {
         localStorage.removeItem('portfolio')
-      } else {
-        localStorage.setItem('portfolio', JSON.stringify(portfolioData))
       }
     }
   }, [])
 
   return (
-    <StyledModal>
+    <StyledModal id='backgroundModal' onClick={(e) => closeModal(e)}>
       <ModalContainer>
         <ModalHeader>
           <StyledH1>Your portfolio</StyledH1>
-          <ModalExit onClick={() => closeModal()} className='exit'>
+          <ModalExit onClick={(e) => closeModal(e)} id='exit'>
             x
           </ModalExit>
         </ModalHeader>

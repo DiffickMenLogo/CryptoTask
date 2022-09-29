@@ -40,6 +40,7 @@ export function List() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentCrypto, setCurrentCrypto] = useState<DataItem>()
   const input = useRef<HTMLInputElement>(null)
+  const submit = useRef<HTMLInputElement>(null)
   const [cryptoValue, setCryptoValue] = useState('')
   const { addCoin } = useActions()
   const { portfolio } = useAppSelector((state) => state.portfolio)
@@ -50,26 +51,49 @@ export function List() {
     }
   }, [portfolio])
 
-  const addCrypto = useCallback(() => {
-    if (input.current !== null) {
-      setCryptoValue(input.current.value)
-      if (currentCrypto != undefined) {
-        addCoin({
-          name: currentCrypto.name,
-          price: currentCrypto.priceUsd,
-          value: input.current.value,
-          change: currentCrypto.changePercent24Hr,
-          id: currentCrypto.id,
-        })
+  const addCrypto = useCallback(
+    (e?: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+      if (e) {
+        e.preventDefault()
       }
+      if (input.current !== null && input.current.value !== '') {
+        setCryptoValue(input.current.value)
+        if (currentCrypto != undefined) {
+          addCoin({
+            name: currentCrypto.name,
+            price: currentCrypto.priceUsd,
+            value: input.current.value,
+            change: currentCrypto.changePercent24Hr,
+            id: currentCrypto.id,
+          })
+        }
+      }
+      if (input.current?.value !== '') {
+        console.log(input.current?.value)
+        setIsModalOpen(false)
+      }
+    },
+    [currentCrypto, cryptoValue],
+  )
+  const submitOnEnter = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
+      addCrypto()
     }
-  }, [currentCrypto, cryptoValue])
+  }
+
+  const closeModal = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const el = e.target as HTMLDivElement
+    if (el.id === 'modalBackground' || el.id === 'exit') {
+      setIsModalOpen(false)
+    }
+  }
 
   function handleClick(id: string, e: React.MouseEvent<HTMLTableRowElement, MouseEvent>) {
     const el = e.target as HTMLElement
-    if (el.tagName !== 'DIV') {
+    if (el.tagName !== 'BUTTON') {
       navigate(`/info?id=${id}`)
     } else {
+      window.scrollTo(0, 0)
       setIsModalOpen(true)
     }
   }
@@ -119,10 +143,12 @@ export function List() {
           </StyledTable>
         )}
         {isModalOpen && (
-          <StyledModal>
-            <ModalContainer>
+          <StyledModal id='modalBackground' onClick={(e) => closeModal(e)} onKeyDown={(e) => submitOnEnter(e)}>
+            <ModalContainer target='#here' name='addCrypto'>
               <ModalHeader>Add waller to your Portfolio</ModalHeader>
-              <ModalExit onClick={() => setIsModalOpen(false)}>X</ModalExit>
+              <ModalExit id='exit' onClick={(e) => closeModal(e)}>
+                X
+              </ModalExit>
               <ModalBody>
                 <ModalText>
                   Enter the amount of{' '}
@@ -130,7 +156,7 @@ export function List() {
                   you want to add to your portfolio
                 </ModalText>
                 <ModalInput ref={input} type={'number'} step={'0.01'}></ModalInput>
-                <ModalButton onClick={() => addCrypto()}>Add</ModalButton>
+                <ModalButton ref={submit} type={'submit'} value={'Submit'} onClick={(e) => addCrypto(e)} />
               </ModalBody>
             </ModalContainer>
           </StyledModal>
